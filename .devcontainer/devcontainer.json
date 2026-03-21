@@ -1,0 +1,9 @@
+{
+    "name": "tmms",
+    "dockerComposeFile": "./docker-compose.yml",
+    "service": "tmms",
+    "workspaceFolder": "/home/dev/work",
+    "remoteUser": "dev",
+    "customizations": {},
+    "shutdownAction": "stopCompose"
+}
