@@ -9,27 +9,20 @@ export function isTmuxAvailable(): boolean {
 }
 
 export async function tmuxCommand(args: string[]): Promise<string> {
-  if (!isTmuxAvailable()) {
-    throw new TmuxNotAvailableError();
-  }
   const { stdout } = await execFileAsync("tmux", args);
   return stdout.trim();
 }
 
 export async function getCurrentPaneId(): Promise<string> {
+  if (!isTmuxAvailable()) {
+    throw new TmuxNotAvailableError();
+  }
   return tmuxCommand(["display-message", "-p", "#{pane_id}"]);
 }
 
 export async function showPaneOption(paneId: string, optionName: string): Promise<string> {
   try {
-    const result = await tmuxCommand([
-      "show-options",
-      "-p",
-      "-v",
-      "-t",
-      paneId,
-      optionName,
-    ]);
+    const result = await tmuxCommand(["show-options", "-p", "-v", "-t", paneId, optionName]);
     return result;
   } catch {
     return "";
@@ -42,12 +35,7 @@ export interface RawPane {
 }
 
 export async function listAllPanes(): Promise<RawPane[]> {
-  const output = await tmuxCommand([
-    "list-panes",
-    "-a",
-    "-F",
-    "#{pane_id}:#{session_id}",
-  ]);
+  const output = await tmuxCommand(["list-panes", "-a", "-F", "#{pane_id}:#{session_id}"]);
   if (!output) return [];
   return output.split("\n").map((line) => {
     const [paneId, sessionId] = line.split(":");

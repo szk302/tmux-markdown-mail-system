@@ -6,14 +6,23 @@ vi.mock("child_process", () => ({
 }));
 
 import { execFile } from "child_process";
-import { isTmuxAvailable, tmuxCommand, getCurrentPaneId, listAllPanes, showPaneOption } from "../../../src/tmux/client.js";
+import {
+  isTmuxAvailable,
+  tmuxCommand,
+  getCurrentPaneId,
+  listAllPanes,
+  showPaneOption,
+} from "../../../src/tmux/client.js";
 import { TmuxNotAvailableError } from "../../../src/shared/errors.js";
 
 const execFileMock = vi.mocked(execFile);
 
 function mockExecFile(stdout: string) {
   execFileMock.mockImplementation((_cmd: unknown, _args: unknown, callback: unknown) => {
-    (callback as (err: null, result: { stdout: string; stderr: string }) => void)(null, { stdout, stderr: "" });
+    (callback as (err: null, result: { stdout: string; stderr: string }) => void)(null, {
+      stdout,
+      stderr: "",
+    });
     return {} as ReturnType<typeof execFile>;
   });
 }
@@ -48,21 +57,12 @@ describe("isTmuxAvailable", () => {
 });
 
 describe("tmuxCommand", () => {
-  beforeEach(() => {
-    process.env["TMUX"] = "/tmp/tmux-1234/default,0,0";
-  });
-
   afterEach(() => {
-    delete process.env["TMUX"];
     vi.resetAllMocks();
   });
 
-  it("throws TmuxNotAvailableError when not in tmux", async () => {
+  it("returns trimmed stdout from tmux (works outside tmux session)", async () => {
     delete process.env["TMUX"];
-    await expect(tmuxCommand(["display-message"])).rejects.toThrow(TmuxNotAvailableError);
-  });
-
-  it("returns trimmed stdout from tmux", async () => {
     mockExecFile("%0\n");
     const result = await tmuxCommand(["display-message", "-p", "#{pane_id}"]);
     expect(result).toBe("%0");
