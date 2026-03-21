@@ -226,9 +226,12 @@ On success, prints the full path of the created outbox file to stdout.
 # Polling interval in seconds (default: 60)
 polling_interval: 60
 
-# Directory for messages with unknown recipients (required, must exist or be creatable)
-dead_letter_dir: /path/to/dead_letter
+# Directory for messages with unknown recipients
+# Default: ~/.local/share/tmms/dead_letter
+dead_letter_dir: ~/.local/share/tmms/dead_letter
 ```
+
+> **Note:** On server startup, if `dead_letter_dir` contains any `.md` files, a warning is printed to stderr with the count and path.
 
 ### tmux pane variables
 

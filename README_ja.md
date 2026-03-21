@@ -226,9 +226,12 @@ echo "本文" | tmms post [オプション]
 # ポーリング間隔（秒）（デフォルト: 60）
 polling_interval: 60
 
-# 宛先不明メッセージの隔離ディレクトリ（必須。存在するか作成可能なパスを指定）
-dead_letter_dir: /path/to/dead_letter
+# 宛先不明メッセージの隔離ディレクトリ
+# デフォルト: ~/.local/share/tmms/dead_letter
+dead_letter_dir: ~/.local/share/tmms/dead_letter
 ```
+
+> **注意:** サーバ起動時に `dead_letter_dir` 内に `.md` ファイルが存在する場合、件数とパスを警告として stderr に出力します。
 
 ### tmux ペイン変数
 
