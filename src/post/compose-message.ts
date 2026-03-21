@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import { writeFile } from "fs/promises";
+import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
 import { parseMessage, mergeFrontmatter, serializeMessage } from "../message/frontmatter.js";
 import { generateFilename } from "../message/filename.js";
@@ -42,6 +42,7 @@ export async function composeMessage(opts: ComposeOptions): Promise<ComposeResul
   const filename = generateFilename(from, to, tmmsId, createdAt);
   const filePath = join(outboxDir, filename);
 
+  await mkdir(outboxDir, { recursive: true });
   await writeFile(filePath, content, { encoding: "utf8", flag: "wx" });
 
   return { filePath, filename, tmmsId };
