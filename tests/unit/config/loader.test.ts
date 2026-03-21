@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { mkdtemp, rm, writeFile } from "fs/promises";
 import { tmpdir } from "os";
 import { join } from "path";
-import { loadConfig } from "../../../src/config/loader.js";
+import { loadConfig, findConfig } from "../../../src/config/loader.js";
 import { ConfigNotFoundError } from "../../../src/shared/errors.js";
 import { ConfigValidationError } from "../../../src/config/schema.js";
 
@@ -52,5 +52,43 @@ describe("loadConfig", () => {
     const configPath = join(tmpDir, "config.yml");
     await writeFile(configPath, "polling_interval: fast\ndead_letter_dir: /tmp/dead\n");
     await expect(loadConfig(configPath)).rejects.toThrow(ConfigValidationError);
+  });
+});
+
+describe("findConfig", () => {
+  it("returns undefined when none of the lookup paths exist", async () => {
+    const paths = [
+      join(tmpDir, "nonexistent1.yml"),
+      join(tmpDir, "nonexistent2.yml"),
+    ];
+    const result = await findConfig(paths);
+    expect(result).toBeUndefined();
+  });
+
+  it("returns the first existing path", async () => {
+    const path1 = join(tmpDir, "first.yml");
+    const path2 = join(tmpDir, "second.yml");
+    await writeFile(path1, "dead_letter_dir: /tmp/dead\n");
+    await writeFile(path2, "dead_letter_dir: /tmp/dead\n");
+
+    const result = await findConfig([path1, path2]);
+    expect(result).toBe(path1);
+  });
+
+  it("skips missing paths and returns the first existing one", async () => {
+    const path1 = join(tmpDir, "missing.yml");
+    const path2 = join(tmpDir, "exists.yml");
+    await writeFile(path2, "dead_letter_dir: /tmp/dead\n");
+
+    const result = await findConfig([path1, path2]);
+    expect(result).toBe(path2);
+  });
+
+  it("returns the only existing path", async () => {
+    const path1 = join(tmpDir, "config.yml");
+    await writeFile(path1, "dead_letter_dir: /tmp/dead\n");
+
+    const result = await findConfig([path1]);
+    expect(result).toBe(path1);
   });
 });

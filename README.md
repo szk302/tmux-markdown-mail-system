@@ -121,10 +121,10 @@ tmux set-option -p @tmms_reply_to "agent-alpha"
 ### 4. Initialize and edit the server config
 
 ```bash
-tmms server init          # creates config.yml in current directory
+tmms server init          # creates ~/.config/tmms/config.yml
 ```
 
-> **Required:** Edit `config.yml` and set `dead_letter_dir` to a real path (e.g., `~/tmms/dead_letter`).
+> **Required:** Edit the generated file and set `dead_letter_dir` to a real path (e.g., `~/tmms/dead_letter`).
 
 ```yaml
 polling_interval: 10
@@ -134,7 +134,7 @@ dead_letter_dir: /home/youruser/tmms/dead_letter
 ### 5. Start the server (in a dedicated pane or background)
 
 ```bash
-tmms server -c config.yml
+tmms server               # auto-discovers ~/.config/tmms/config.yml
 ```
 
 ### 6. Send a message from Pane A
@@ -168,9 +168,15 @@ Start the TMMS routing server. Polls all enabled panes and processes Task A (rou
 tmms server [options]
 ```
 
-| Option | Default | Description |
-| :--- | :--- | :--- |
-| `-c, --config <PATH>` | `./config.yml` | Path to server configuration file |
+| Option | Description |
+| :--- | :--- |
+| `-c, --config <PATH>` | Path to config file (skips auto-discovery) |
+
+When `-c` is not specified, the server searches for a config file in the following order:
+
+1. `~/.tmms.yml`
+2. `~/.tmms/config.yml`
+3. `~/.config/tmms/config.yml`
 
 The server runs until it receives `SIGINT` (`Ctrl-C`) or `SIGTERM`.
 
@@ -178,7 +184,7 @@ The server runs until it receives `SIGINT` (`Ctrl-C`) or `SIGTERM`.
 
 ### `tmms server init`
 
-Generate a default `config.yml` template.
+Generate a default config file template.
 
 ```bash
 tmms server init [options]
@@ -186,9 +192,9 @@ tmms server init [options]
 
 | Option | Default | Description |
 | :--- | :--- | :--- |
-| `-o, --output <PATH>` | `./config.yml` | Output path for the config file |
+| `-o, --output <PATH>` | `~/.config/tmms/config.yml` | Output path for the config file |
 
-Exits with an error if the output file already exists.
+The parent directory is created automatically if it does not exist. Exits with an error if the output file already exists.
 
 ---
 

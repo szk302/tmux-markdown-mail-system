@@ -121,10 +121,10 @@ tmux set-option -p @tmms_reply_to "agent-alpha"
 ### 4. サーバ設定ファイルを初期化・編集する
 
 ```bash
-tmms server init          # カレントディレクトリに config.yml を生成
+tmms server init          # ~/.config/tmms/config.yml を生成
 ```
 
-> **必須:** `config.yml` を開き、`dead_letter_dir` を実際のパスに変更してください。
+> **必須:** 生成されたファイルを開き、`dead_letter_dir` を実際のパスに変更してください。
 
 ```yaml
 polling_interval: 10
@@ -134,7 +134,7 @@ dead_letter_dir: /home/youruser/tmms/dead_letter
 ### 5. サーバを起動する（専用ペインまたはバックグラウンドで）
 
 ```bash
-tmms server -c config.yml
+tmms server               # ~/.config/tmms/config.yml を自動探索して起動
 ```
 
 ### 6. ペイン A からメッセージを送信する
@@ -168,9 +168,15 @@ TMMS ルーティングサーバを起動します。有効なペインをポー
 tmms server [オプション]
 ```
 
-| オプション | デフォルト | 説明 |
-| :--- | :--- | :--- |
-| `-c, --config <PATH>` | `./config.yml` | サーバ設定ファイルのパス |
+| オプション | 説明 |
+| :--- | :--- |
+| `-c, --config <PATH>` | 設定ファイルのパスを明示指定（自動探索をスキップ） |
+
+`-c` を指定しない場合、以下の順序で設定ファイルを探索します:
+
+1. `~/.tmms.yml`
+2. `~/.tmms/config.yml`
+3. `~/.config/tmms/config.yml`
 
 `SIGINT`（Ctrl-C）または `SIGTERM` を受信するまで実行を続けます。
 
@@ -178,7 +184,7 @@ tmms server [オプション]
 
 ### `tmms server init`
 
-デフォルトの `config.yml` テンプレートを生成します。
+デフォルトの設定ファイルテンプレートを生成します。
 
 ```bash
 tmms server init [オプション]
@@ -186,9 +192,9 @@ tmms server init [オプション]
 
 | オプション | デフォルト | 説明 |
 | :--- | :--- | :--- |
-| `-o, --output <PATH>` | `./config.yml` | 設定ファイルの出力パス |
+| `-o, --output <PATH>` | `~/.config/tmms/config.yml` | 設定ファイルの出力パス |
 
-出力先にファイルが既に存在する場合はエラーで終了します。
+出力先の親ディレクトリが存在しない場合は自動的に作成されます。出力先にファイルが既に存在する場合はエラーで終了します。
 
 ---
 
