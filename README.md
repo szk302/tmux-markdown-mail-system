@@ -147,7 +147,6 @@ echo "Hello from alpha!" | tmms post -t agent-beta -s "Greeting"
 tmms post -t agent-beta -s "Report" -f report.md
 ```
 
-> **Warning:** When using `-f <file>` or a positional file argument, the source file is **deleted** after the message is written to the outbox. This is by design (safe move semantics). Back up the file first if you need to keep it.
 
 ### 7. Check received messages in Pane B
 
@@ -207,9 +206,7 @@ echo "Body" | tmms post [options]
 | :--- | :--- |
 | `-t, --to <ADDRESS>` | Recipient's `@tmms_name`. Falls back to `@tmms_reply_to` if omitted; errors if neither is set. |
 | `-s, --subject <TEXT>` | Message subject (sets `tmms_subject` in front matter). |
-| `-f, --file <PATH>` | Path to a Markdown file to send. |
-
-> **Warning:** When input comes from a file (`-f` or positional argument), the source file is **permanently deleted** after the message is written to the outbox.
+| `-f, --file <PATH>` | Path to a Markdown file to send. The original file is left unchanged. |
 
 On success, prints the full path of the created outbox file to stdout.
 

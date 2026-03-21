@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import { writeFile, unlink } from "fs/promises";
+import { writeFile } from "fs/promises";
 import { join } from "path";
 import { parseMessage, mergeFrontmatter, serializeMessage } from "../message/frontmatter.js";
 import { generateFilename } from "../message/filename.js";
@@ -12,8 +12,6 @@ export interface ComposeOptions {
   outboxDir: string;
   subject?: string;
   threadId?: string;
-  /** Path of the source file, if input came from a file (will be deleted after write) */
-  sourceFilePath?: string;
 }
 
 export interface ComposeResult {
@@ -23,7 +21,7 @@ export interface ComposeResult {
 }
 
 export async function composeMessage(opts: ComposeOptions): Promise<ComposeResult> {
-  const { body, to, from, outboxDir, subject, threadId, sourceFilePath } = opts;
+  const { body, to, from, outboxDir, subject, threadId } = opts;
 
   const tmmsId = randomUUID();
   const createdAt = new Date().toISOString();
@@ -45,10 +43,6 @@ export async function composeMessage(opts: ComposeOptions): Promise<ComposeResul
   const filePath = join(outboxDir, filename);
 
   await writeFile(filePath, content, { encoding: "utf8", flag: "wx" });
-
-  if (sourceFilePath) {
-    await unlink(sourceFilePath);
-  }
 
   return { filePath, filename, tmmsId };
 }

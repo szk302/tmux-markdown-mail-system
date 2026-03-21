@@ -24,41 +24,37 @@ export function registerPostCommand(program: Command): void {
     .option("-t, --to <ADDRESS>", "Recipient address (@tmms_name)")
     .option("-s, --subject <TEXT>", "Message subject")
     .option("-f, --file <PATH>", "Path to Markdown file to send")
-    .action(async (fileArg: string | undefined, opts: { to?: string; subject?: string; file?: string }) => {
-      try {
-        const pane = await getCurrentPaneInfo();
+    .action(
+      async (
+        fileArg: string | undefined,
+        opts: { to?: string; subject?: string; file?: string },
+      ) => {
+        try {
+          const pane = await getCurrentPaneInfo();
 
-        const to = opts.to ?? pane.replyTo;
-        if (!to) {
-          throw new NoRecipientError();
+          const to = opts.to ?? pane.replyTo;
+          if (!to) {
+            throw new NoRecipientError();
+          }
+
+          const filePath = opts.file ?? fileArg;
+          const body = filePath ? await readFile(filePath, "utf8") : await readStdin();
+
+          const result = await composeMessage({
+            body,
+            to,
+            from: pane.name,
+            outboxDir: pane.outbox,
+            subject: opts.subject,
+          });
+
+          logger.info("Message posted", { filename: result.filename, to, from: pane.name });
+          process.stdout.write(result.filePath + "\n");
+        } catch (err) {
+          const message = err instanceof Error ? err.message : String(err);
+          process.stderr.write(`tmms post: ${message}\n`);
+          process.exit(1);
         }
-
-        const filePath = opts.file ?? fileArg;
-        let body: string;
-        let sourceFilePath: string | undefined;
-
-        if (filePath) {
-          body = await readFile(filePath, "utf8");
-          sourceFilePath = filePath;
-        } else {
-          body = await readStdin();
-        }
-
-        const result = await composeMessage({
-          body,
-          to,
-          from: pane.name,
-          outboxDir: pane.outbox,
-          subject: opts.subject,
-          sourceFilePath,
-        });
-
-        logger.info("Message posted", { filename: result.filename, to, from: pane.name });
-        process.stdout.write(result.filePath + "\n");
-      } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        process.stderr.write(`tmms post: ${message}\n`);
-        process.exit(1);
-      }
-    });
+      },
+    );
 }

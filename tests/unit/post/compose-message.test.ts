@@ -41,7 +41,11 @@ describe("composeMessage", () => {
 
   it("preserves non-tmms_ keys from existing frontmatter", async () => {
     const bodyWithFrontmatter = `---\ntags:\n  - important\n---\nHello`;
-    const result = await composeMessage({ ...baseOpts, body: bodyWithFrontmatter, outboxDir: tmpDir });
+    const result = await composeMessage({
+      ...baseOpts,
+      body: bodyWithFrontmatter,
+      outboxDir: tmpDir,
+    });
     const content = await readFile(result.filePath, "utf8");
     const parsed = parseMessage(content);
     expect(parsed.frontmatter["tags"]).toEqual(["important"]);
@@ -49,7 +53,11 @@ describe("composeMessage", () => {
 
   it("overwrites tmms_ keys from existing frontmatter", async () => {
     const bodyWithFrontmatter = `---\ntmms_from: old-agent\ntmms_to: wrong-target\n---\nHello`;
-    const result = await composeMessage({ ...baseOpts, body: bodyWithFrontmatter, outboxDir: tmpDir });
+    const result = await composeMessage({
+      ...baseOpts,
+      body: bodyWithFrontmatter,
+      outboxDir: tmpDir,
+    });
     const content = await readFile(result.filePath, "utf8");
     const parsed = parseMessage(content);
     expect(parsed.frontmatter["tmms_from"]).toBe("agent-alpha");
@@ -68,18 +76,14 @@ describe("composeMessage", () => {
     expect(result.filename).toMatch(/^\d{8}-\d{6}_agent-alpha_to_user-main_[a-f0-9]{8}\.md$/);
   });
 
-  it("deletes source file after writing when sourceFilePath provided", async () => {
+  it("does not delete the source file (copy semantics)", async () => {
     const srcFile = join(tmpDir, "input.md");
     await writeFile(srcFile, "# Test\nBody text");
 
-    await composeMessage({ ...baseOpts, body: "# Test\nBody text", outboxDir: tmpDir, sourceFilePath: srcFile });
+    const body = await import("fs/promises").then((fs) => fs.readFile(srcFile, "utf8"));
+    await composeMessage({ ...baseOpts, body, outboxDir: tmpDir });
 
-    await expect(access(srcFile)).rejects.toThrow();
-  });
-
-  it("does NOT delete source file when sourceFilePath not provided", async () => {
-    const result = await composeMessage({ ...baseOpts, outboxDir: tmpDir });
-    // Just verify the output file exists
-    await expect(access(result.filePath)).resolves.toBeUndefined();
+    // Original file must still exist
+    await expect(access(srcFile)).resolves.toBeUndefined();
   });
 });
