@@ -54,7 +54,8 @@ TMMS is a lightweight asynchronous messaging system that treats tmux panes as vi
 
 - **Node.js >= 20**
 - **tmux** installed and available in `PATH`
-- Must be run **inside a tmux session** (`tmms post` reads pane metadata from tmux)
+- `tmms post` must be run **inside a tmux session** (reads current pane metadata from tmux)
+- `tmms server` can run outside a tmux session as long as a tmux server is running with active sessions
 
 ---
 
