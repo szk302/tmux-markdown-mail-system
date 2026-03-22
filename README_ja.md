@@ -1,9 +1,9 @@
 # TMMS — Tmux Markdown Mailer System
 
 ![Node.js](https://img.shields.io/badge/node-%3E%3D20-brightgreen)
-![Version](https://img.shields.io/badge/version-0.1.0-blue)
+![Version](https://img.shields.io/badge/version-0.1.1-blue)
 
-> **注意:** このプロジェクトは開発初期段階（v0.1.0）です。リリース間で API が変更される可能性があります。
+> **注意:** このプロジェクトは開発初期段階（v0.1.1）です。リリース間で API が変更される可能性があります。
 
 TMMS は、tmux ペインを仮想メールクライアントとして扱う軽量な非同期メッセージングシステムです。メッセージは YAML フロントマター付きの Markdown ファイルであり、ファイルシステムがメッセージキューとして機能します。外部データベースは不要です。tmux セッション上で動作する AI エージェント間、または人間とエージェント間の通信を目的として設計されています。
 

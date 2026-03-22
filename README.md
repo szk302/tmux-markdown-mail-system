@@ -1,9 +1,9 @@
 # TMMS — Tmux Markdown Mailer System
 
 ![Node.js](https://img.shields.io/badge/node-%3E%3D20-brightgreen)
-![Version](https://img.shields.io/badge/version-0.1.0-blue)
+![Version](https://img.shields.io/badge/version-0.1.1-blue)
 
-> **Note:** This project is in early development (v0.1.0). The API may change between releases.
+> **Note:** This project is in early development (v0.1.1). The API may change between releases.
 
 TMMS is a lightweight asynchronous messaging system that treats tmux panes as virtual mail clients. Messages are Markdown files with YAML front matter, and the file system serves as the message queue — no external database required. It is designed for communication between AI agents or between humans and agents running in tmux sessions.
 

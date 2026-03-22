@@ -1,6 +1,6 @@
 {
   "name": "@szk302/tmms",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Tmux Markdown Mailer System — async messaging between tmux panes via Markdown files",
   "type": "module",
   "bin": {
