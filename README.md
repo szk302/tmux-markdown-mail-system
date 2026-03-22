@@ -62,20 +62,14 @@ TMMS is a lightweight asynchronous messaging system that treats tmux panes as vi
 ## Installation
 
 ```bash
-# Clone and install dependencies
-git clone <repository-url>
-cd tmms
-pnpm install
+# npm
+npm install -g @szk302/tmms
 
-# Build
-pnpm build
+# pnpm
+pnpm add -g @szk302/tmms
 
-# Make available globally (choose one)
-pnpm link --global
-# or add to PATH:
-export PATH="$PATH:/path/to/tmms/dist"
-# or use directly:
-node dist/index.js --help
+# yarn
+yarn global add @szk302/tmms
 ```
 
 ---
