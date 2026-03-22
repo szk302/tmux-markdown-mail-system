@@ -1,4 +1,4 @@
-import { readdir, rename, copyFile, unlink } from "fs/promises";
+import { readdir, rename, copyFile, unlink, mkdir } from "fs/promises";
 import { join } from "path";
 import { parseMessage } from "../message/frontmatter.js";
 import { readFile } from "fs/promises";
@@ -21,10 +21,7 @@ async function moveFile(src: string, dest: string): Promise<void> {
   }
 }
 
-export async function routeMessages(
-  panes: PaneInfo[],
-  deadLetterDir: string,
-): Promise<void> {
+export async function routeMessages(panes: PaneInfo[], deadLetterDir: string): Promise<void> {
   for (const pane of panes) {
     let files: string[];
     try {
@@ -52,6 +49,7 @@ export async function routeMessages(
 
       if (typeof tmmsTo !== "string" || !tmmsTo) {
         logger.warn("Message missing tmms_to, routing to dead letter", { path: srcPath });
+        await mkdir(deadLetterDir, { recursive: true });
         await moveFile(srcPath, join(deadLetterDir, filename));
         continue;
       }
@@ -62,10 +60,12 @@ export async function routeMessages(
           path: srcPath,
           tmms_to: tmmsTo,
         });
+        await mkdir(deadLetterDir, { recursive: true });
         await moveFile(srcPath, join(deadLetterDir, filename));
         continue;
       }
 
+      await mkdir(destPane.inbox, { recursive: true });
       const destPath = join(destPane.inbox, filename);
       await moveFile(srcPath, destPath);
       logger.info("Message routed", { from: pane.name, to: tmmsTo, filename });
