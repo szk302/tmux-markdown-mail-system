@@ -8,7 +8,7 @@ ARG ARCH=arm64
 ARG KIRO_CLI_VERSION=latest
 ARG CLAUDE_CODE_VERSION=2.0.25
 ARG GEMINI_CLI_VERSION=0.19.1
-ARG NODE_VERSION=24.10.0
+ARG NODE_VERSION=24.14.0
 
 LABEL maintainer="69619077+szk302@users.noreply.github.com" \
       description="tmms developer image" \
