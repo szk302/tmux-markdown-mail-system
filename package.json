@@ -1,11 +1,17 @@
 {
-  "name": "tmms",
+  "name": "@szk302/tmms",
   "version": "0.1.0",
-  "description": "Tmux Markdown Mailer System",
+  "description": "Tmux Markdown Mailer System — async messaging between tmux panes via Markdown files",
   "type": "module",
   "bin": {
     "tmms": "./dist/index.js"
   },
+  "files": [
+    "dist",
+    "README.md",
+    "README_ja.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
@@ -13,7 +19,27 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "lint": "eslint src tests",
-    "format": "prettier --write src tests"
+    "format": "prettier --write src tests",
+    "prepublishOnly": "pnpm test && pnpm build"
+  },
+  "keywords": [
+    "tmux",
+    "cli",
+    "messaging",
+    "markdown",
+    "agent",
+    "ipc",
+    "ai-agent"
+  ],
+  "author": "szk302",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/szk302/tmms.git"
+  },
+  "homepage": "https://github.com/szk302/tmms#readme",
+  "publishConfig": {
+    "access": "public"
   },
   "dependencies": {
     "commander": "^12.1.0",
